@@ -2,7 +2,7 @@ CC = g++
 CFLAGS = -std=c++17
 INCLUDE = 
 LINKER_FLAGS = 
-SOURCES = pseudocode.cpp game/game.cpp
+SOURCES = pseudocode.cpp game/game.cpp game/parser.cpp
 SOURCE_OBJECT_FILES = $(shell basename -a ${SOURCES:.cpp=.o})
 TARGET = dialogue
 

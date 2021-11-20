@@ -1,7 +1,7 @@
 #include "unistd.h"
 
 #include "dependencies/external.hpp"
-// #include "game/parser.hpp"
+#include "game/parser.hpp"
 #include "game/game.hpp"
 
 bool execute(Game& game) {
@@ -33,9 +33,9 @@ bool execute(Game& game) {
 int main() {
     // Event event;
     Game game {};
-    // Parser parser;
-    // parser.loadScene("start_scene");
-    uint selection {0};
+    Parser parser(game);
+    parser.loadScene("test.scene");
+    int selection {0};
     bool done {false};
     while(!done) {
         // event = game.input.poll();
@@ -43,22 +43,26 @@ int main() {
         //     done = true;
         //     break;
         // }
-        game.display(); //renders and displays to screen: separate rendering and displaying?
+        // game.display(); //renders and displays to screen: separate rendering and displaying?
         game.animation_handler.update();
         // std::cout << "returned from update...\n";
         if(game.animation_handler.pending()) {
             // std::cout << "animation blocking...\n";
             // sleep(2);
-            // continue;
+            continue;
         } else if (game.input.pending()) {
             // std::cout << "input blocking...\n";
             selection = game.input.read(); //acts on custom input previously polled: e.g. select option (writes it to current selection buffer) + sets input from pending to non-pending
-            if (selection < 0) done = true;
+            if (selection < 0) {
+                done = true;
+            } else if (selection > 0) {
+                parser.setSelection(selection);
+            }
             continue;
         } else {
             // std::cout << "executing game...\n";
-            done = execute(game);
-
+            // done = execute(game);
+            done = parser.execute();
         }
 
         // std::cout << "returned from execution...\n";

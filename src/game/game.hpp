@@ -109,6 +109,7 @@ public:
 public:
     void write(std::string content); // registers blocking animation (type one character at a time with animation handler)
     void writeAnswers(std::initializer_list<std::string> answers);
+    void writeAnswers(std::vector<std::string> answers);
     void display();
 
 public:

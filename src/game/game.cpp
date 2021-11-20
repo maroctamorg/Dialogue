@@ -22,7 +22,6 @@ void Input::listen(uint max) {
 }
 
 int Input::read() {
-    std::cout << "reading...\n";
     bool done {false};
     std::string input;
 
@@ -30,7 +29,7 @@ int Input::read() {
     std::cin.clear();
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-    if(input.at(0) == 'q' || input.compare("quit")) {
+    if(input.at(0) == 'q' || input == "quit") {
         this->free();
         return -1;
     }
@@ -133,7 +132,7 @@ void Write_Animation::next() {
         counter++;
         return;
     } else if(index < content.length()) {
-        std::cout << content.at(index) << std::flush;
+        std::cout << "\033[31;1;4m" << content.at(index) << "\033[0m"<< std::flush;
         index++;
         counter = 0;
         return;
@@ -153,6 +152,23 @@ void Game::write(std::string content) {
 void Game::writeAnswers(std::initializer_list<std::string> answers) {
     // std::cout << "Call to write answers..\n";
     std::initializer_list<std::string>::iterator it {answers.begin()};
+    uint counter {1};
+    std::stringstream content;
+    while(it != answers.end()) {
+        content << counter << ". " << (*it) << '\n';
+        counter++;
+        it++;
+    }
+
+    this->write(content.str());
+
+    // tell input to listen for response (blocking mode)
+    input.listen(answers.size());
+}
+
+void Game::writeAnswers(std::vector<std::string> answers) {
+    // std::cout << "Call to write answers..\n";
+    std::vector<std::string>::iterator it {answers.begin()};
     uint counter {1};
     std::stringstream content;
     while(it != answers.end()) {
