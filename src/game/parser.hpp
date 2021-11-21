@@ -29,6 +29,9 @@ private:
     Game& game;
     std::stringstream script;
     int selection {0};
+    bool done {false};
+
+    bool goTo(int argument);
 
 public:
     void setSelection(int value);
