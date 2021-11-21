@@ -1,2 +1,2 @@
-0 say 'Loaded test2.scene\n'
-1 end
+0 say 'Successfully loaded test2\.scene\nExiting\.\.\.\n'.
+1 end.

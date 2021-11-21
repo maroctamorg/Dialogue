@@ -1,13 +1,15 @@
-0 say 'Welcome to the game handler class test.\nThe parser is not yet implemented, so I am simulating the succesive instructions which would be read from a script\n'
-1 res 'Ok.' 'What is the point to all of this?' 'Boring...' 'Cool!'
-2 if 1 goto 7
-3 if 2 goto 9
-4 if 3 load 'test2.scene'
-5 if 4 goto 11
-6 if 5 goto 11
-7 say 'Ok, then... Goodbye!\n'
-8 goto 12
-9 say 'I ask myself that questions everyday... Goodbye!\n'
-10 goto 12
-11 say 'Goodbye!\n'
-12 end
+0 say
+'Welcome to a first test of the text-adventure library (at this moment commandline only)\.
+The parser is up and running!\n\n'.
+1 res 'Ok\.' 'What is the point to all of this?' 'Boring\.\.\.' 'Cool!\n'.
+2 if 1 goto 7.
+3 if 2 goto 9.
+4 if 3 load 'test2\.scene'.
+5 if 4 goto 11.
+6 if 5 goto 11.
+7 say 'Ok, then\.\.\. Goodbye!\n'.
+8 goto 12.
+9 say 'I ask myself that very same question everyday\.\.\. Goodbye!\n'.
+10 goto 12.
+11 say 'Goodbye!\n'.
+12 end.

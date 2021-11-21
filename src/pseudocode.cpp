@@ -37,6 +37,9 @@ int main() {
     parser.loadScene("test.scene");
     int selection {0};
     bool done {false};
+
+    std::cout << "\033[2J";
+
     while(!done) {
         // event = game.input.poll();
         // if(game.input.poll() < 0) {//handles input such as pause (go to menu), quit and other static functionality built-in directly to game_handler

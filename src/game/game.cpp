@@ -19,6 +19,7 @@ void Input::listen(uint max) {
     if(max < 0) return;
     this->max = max;
     control = true;
+    // std::cout << "\033[33;1;1m" << std::flush;
 }
 
 int Input::read() {
@@ -38,7 +39,7 @@ int Input::read() {
         std::stringstream s {&(input.at(0))};
         int digit {0};
         s >> digit;
-        std::cout << "You've entered '" << digit << "'\n"; 
+        // std::cout << "You've entered '" << digit << "'\n"; 
         if( digit > 0 && digit < max + 1) {
             this->free();
             return digit;
@@ -55,6 +56,7 @@ bool Input::pending() {
 
 void Input::free() {
     control = false;
+    // std::cout << "\033[0m" << std::flush;
 }
 
 bool Animation::isDone() const {
@@ -132,7 +134,7 @@ void Write_Animation::next() {
         counter++;
         return;
     } else if(index < content.length()) {
-        std::cout << "\033[31;1;4m" << content.at(index) << "\033[0m"<< std::flush;
+        std::cout << "\033[34;1;1m" << content.at(index) << "\033[0m"<< std::flush;
         index++;
         counter = 0;
         return;
@@ -144,7 +146,7 @@ void Write_Animation::next() {
 
 void Game::write(std::string content) {
     // std::cout << "call to write...\n";
-    std::unique_ptr<Write_Animation> animation { new Write_Animation(content, 100000) };
+    std::unique_ptr<Write_Animation> animation { new Write_Animation(content, 200000) };
     uint id { animation_handler.add(std::move(animation)) };
     animation_handler.start(id);
 }
