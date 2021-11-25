@@ -83,8 +83,8 @@ bool Parser::goTo(int argument) {
     script.seekg(script.beg);
 
     do {
-        getStringUpToChar(script, buffer, '.');
-        std::getline(script, buffer); // flushes newline
+        getStringUpToChar(script, buffer, '#');
+        // std::getline(script, buffer); // flushes newline (not needed anymore)
         script >> test;
     } while(test < argument);
 
@@ -125,6 +125,7 @@ void Parser::loadScene(std::string scene) {
 //     }
 // }
 bool Parser::execute(std::string sentence_s) {
+    if(sentence_s.empty()) return true;
     std::stringstream sentence {sentence_s};
     std::string buffer;
     int line;
@@ -147,7 +148,7 @@ bool Parser::execute(std::string sentence_s) {
             getStringUpToChar(sentence, content, '\'');
             parseEscapedChar(content);
             game.write(content);
-            std::getline(script, buffer); //flushes the script stream to the next line
+            // std::getline(script, buffer); //flushes the script stream to the next line
             return true;
             break;
         }
@@ -167,7 +168,7 @@ bool Parser::execute(std::string sentence_s) {
             // std::cout << "Exiting loop...\n";
             std::for_each(options.begin(), options.end(), parseEscapedChar); // what is passed to the function: the iterator or the content it is pointing to?
             game.writeAnswers(options);
-            std::getline(script, buffer); //flushes the script stream to the next line
+            // std::getline(script, buffer); //flushes the script stream to the next line
             return true;
             break;
         };
@@ -179,12 +180,12 @@ bool Parser::execute(std::string sentence_s) {
                 selection = 0;
                 std::string subsentence;
                 // sentence.seekg(sentence.tellg()+1); // not needed, the stream >> already ignores whitespaces + is quite ugly and inflexible
-                getStringUpToChar(sentence, subsentence, '.');
+                getStringUpToChar(sentence, subsentence, '#');
                 std::stringstream conditional;
                 conditional << argument << " " << subsentence << '\n';
                 return this->execute(conditional.str());
             }
-            std::getline(script, buffer); //flushes the script stream to the next line
+            // std::getline(script, buffer); //flushes the script stream to the next line
             return true;
             break;
         }
@@ -209,7 +210,7 @@ bool Parser::execute(std::string sentence_s) {
             break;
         }
         default: {
-            std::getline(script, buffer); //flushes the script stream to the next line
+            // std::getline(script, buffer); //flushes the script stream to the next line
             return true;
             break;
         }
@@ -219,7 +220,7 @@ bool Parser::execute(std::string sentence_s) {
 bool Parser::execute() {
     // std::cout << "Call to parser execute\n";
     std::string sentence;
-    getStringUpToChar(script, sentence, '.');
+    getStringUpToChar(script, sentence, '#');
     // std::cout << "\nScript: " << script.str() << "\n\n";
     // std::cout << "Sentence being parsed: " << sentence << '\n';
     done = !this->execute(sentence);

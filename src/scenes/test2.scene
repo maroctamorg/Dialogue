@@ -1,2 +1,2 @@
-0 say 'Successfully loaded test2\.scene\nExiting\.\.\.\n'.
-1 end.
+# 0 say 'Successfully loaded test2.scene\nExiting...\n'
+# 1 end
