@@ -1,4 +1,5 @@
 #include "parser.hpp"
+#include "game.hpp"
 
 bool Parser::getStringUpToChar(std::stringstream& stream, std::string& sentence, char delim) {
     // std::cout << "string being parsed " <<  stream.str() << " up to character: " << delim << '\n';

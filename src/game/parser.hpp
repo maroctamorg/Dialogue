@@ -2,7 +2,8 @@
 #define PARSER_HPP
 
 #include "../dependencies/external.hpp"
-#include "game.hpp"
+
+class Game;
 
 class Parser {
 private:

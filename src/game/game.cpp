@@ -1,133 +1,5 @@
 #include "game.hpp"
 
-// poll should listen asynchronously to keyboard input...
-int Input::poll() {
-    bool done {false};
-    std::string input;
-
-    std::cin >> input;
-    std::cin.clear();
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-    if(input.at(0) == 'q' || input.compare("quit")) {
-        this->free();
-        return -1;
-    }
-}
-
-void Input::listen(uint max) {
-    if(max < 0) return;
-    this->max = max;
-    control = true;
-    // std::cout << "\033[33;1;1m" << std::flush;
-}
-
-int Input::read() {
-    bool done {false};
-    std::string input;
-
-    std::cin >> input;
-    std::cin.clear();
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-    if(input.at(0) == 'q' || input == "quit") {
-        this->free();
-        return -1;
-    }
-
-    if(input.length() == 1 && isdigit(input.at(0))) {
-        std::stringstream s {&(input.at(0))};
-        int digit {0};
-        s >> digit;
-        // std::cout << "You've entered '" << digit << "'\n"; 
-        if( digit > 0 && digit < max + 1) {
-            this->free();
-            return digit;
-        }
-    }
-
-    std::cout << "Invalid input, enter number between 1 and " << max << "\n";
-    return 0;
-}
-
-bool Input::pending() {
-    return control;
-}
-
-void Input::free() {
-    control = false;
-    // std::cout << "\033[0m" << std::flush;
-}
-
-bool Animation::isDone() const {
-    return done;
-}
-
-bool Animation::isActive() const {
-    return active;
-}
-
-void Animation::start() {
-    active = true;
-}
-
-void Animation::next() {
-    std::cout << "Call to Animation base class next...\n";
-    counter++;
-}
-
-void Animation::end() {
-    // std::cout << "Call to end animation...\n";
-    active = false;
-    done = true;
-}
-
-void Animation::reset() {
-    active = false;
-    done = false;
-}
-
-uint Animation_Handler::add(std::unique_ptr<Animation> animation) {
-    counter++;
-    animations.insert({counter, std::move(animation)});
-    return counter;
-}
-
-void Animation_Handler::remove(uint animation) {
-    animations.erase(animation);
-}
-
-void Animation_Handler::start(uint animation) {
-    animations.at(animation)->start();
-}
-
-bool Animation_Handler::pending() const {
-    bool blocking {false};
-    std::map<uint, std::unique_ptr<Animation>>::const_iterator it {animations.cbegin()};
-    while(it != animations.cend()) {
-        blocking = blocking || (it->second->blocking && it->second->isActive());
-        it++;
-    }
-    return blocking;
-}
-
-void Animation_Handler::update() {
-    // std::cout << "call to update...\n";
-    std::map<uint, std::unique_ptr<Animation>>::iterator it {animations.begin()};
-    int del {0};
-    while(it != animations.end()) {
-        // std::cout << "prepare for doom...\n";
-        if(it->second->isActive()) it->second->next();
-        else if (it->second->isDone()) {
-            if(it->second->deleteWhenDone) del = it->first;
-            else it->second->reset();
-        }
-        it++;
-    }
-
-    if(del > 0) animations.erase(del);
-}
-
 void Write_Animation::next() {
     // std::cout << "call to write_animation::next\n";
     if(counter != frequency) {
@@ -188,3 +60,39 @@ void Game::writeAnswers(std::vector<std::string> answers) {
 void Game::display() {
 
 };
+
+void Game::run() {
+    bool done {false};
+    while(!done) {
+        // event = input.poll();
+        // if(input.poll() < 0) {//handles input such as pause (go to menu), quit and other static functionality built-in directly to game_handler
+        //     done = true;
+        //     break;
+        // }
+        // display(); //renders and displays to screen: separate rendering and displaying?
+        animation_handler.update();
+        if(animation_handler.pending()) {
+            // std::cout << "animation blocking...\n";
+            continue;
+        } else if (input.pending()) {
+            // std::cout << "input blocking...\n";
+            selection = input.read(); //acts on custom input previously polled: e.g. select option (writes it to current selection buffer) + sets input from pending to non-pending
+            if (selection < 0) {
+                done = true;
+            } else if (selection > 0) {
+                parser.setSelection(selection);
+            }
+            continue;
+        } else {
+            // std::cout << "executing game...\n";
+            // done = execute(game);
+            done = parser.execute();
+        }
+    }
+}
+
+Game::Game(std::shared_ptr<GraphicsContext> context, std::shared_ptr<EventHandler> handler)
+    :   parser(this) {
+        parser.loadScene("init.scene");
+        ui.construct(std::shared_ptr<GraphicsContext> context, std::shared_ptr<EventHandler> handler);
+    }
