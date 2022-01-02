@@ -9,7 +9,7 @@ bool Parser::getStringUpToChar(std::stringstream& stream, std::string& sentence,
     // stream.seekg(stream.beg); // can't do this... stream object needs to progress as expected by the remaining execution of the program
     stream >> buffer_c;
     if(buffer_c != delim)
-        stream.seekg(stream.tellg() - 1);
+        stream.seekg(stream.tellg().operator-(1));
     else {
         return true;
     }
@@ -22,10 +22,10 @@ bool Parser::getStringUpToChar(std::stringstream& stream, std::string& sentence,
         sentence.append(buffer);
         // std::cout << "sentence iteration: " << sentence << '\n';
         if(stream.eof()) break;
-        stream.seekg(stream.tellg() - 2);
+        stream.seekg(stream.tellg().operator-(2));
         stream >> previous;
         // std::cout << "previous: " << previous << '\n';
-        stream.seekg(stream.tellg() + 1);
+        stream.seekg(stream.tellg().operator+(1));
         // std::cout << "currentpos: " << stream.tellg() << '\n';
     } while(previous == '\\');
 
@@ -89,7 +89,7 @@ bool Parser::goTo(int argument) {
     } while(test < argument);
 
     if(test == argument) {
-        script.seekg(script.tellg() - 1);
+        script.seekg(script.tellg().operator-(1));
         return true;
     }
     
